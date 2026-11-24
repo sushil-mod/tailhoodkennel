@@ -1,0 +1,122 @@
+---
+/**
+ * Tailhood badge with a breathing gold halo and a light sweep that passes
+ * over the gold only (the sweep is masked by the logo's own alpha channel).
+ */
+import { getImage } from 'astro:assets';
+import logo from '../assets/brand/tailhood-logo.png';
+
+const small = await getImage({ src: logo, width: 480, format: 'webp', quality: 82 });
+const large = await getImage({ src: logo, width: 960, format: 'webp', quality: 82 });
+const aspect = logo.height / logo.width;
+---
+
+<div class="logo" style={`--logo-mask: url(${small.src}); --aspect: ${aspect}`}>
+  <div class="halo" aria-hidden="true"></div>
+  <img
+    src={small.src}
+    srcset={`${small.src} 480w, ${large.src} 960w`}
+    sizes="(max-width: 600px) 78vw, 440px"
+    width={480}
+    height={Math.round(480 * aspect)}
+    alt="Tailhood — Golden Retriever kennel logo"
+    fetchpriority="high"
+    decoding="async"
+  />
+  <span class="shine" aria-hidden="true"></span>
+</div>
+
+<style>
+  .logo {
+    position: relative;
+    width: min(78vw, 440px, 46svh / var(--aspect));
+    aspect-ratio: 1 / var(--aspect);
+    margin-inline: auto;
+    animation: logo-in 1.4s var(--ease-out) both;
+  }
+
+  img {
+    position: relative;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.6));
+  }
+
+  .halo {
+    position: absolute;
+    inset: -8% -4% 0;
+    border-radius: 50%;
+    background: radial-gradient(
+      closest-side,
+      rgba(247, 215, 116, 0.34),
+      rgba(212, 161, 42, 0.14) 55%,
+      transparent 100%
+    );
+    filter: blur(14px);
+    animation: breathe 5.5s ease-in-out infinite 1.4s;
+  }
+
+  .shine {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      115deg,
+      transparent 38%,
+      rgba(255, 246, 214, 0.75) 49%,
+      rgba(255, 246, 214, 0.15) 54%,
+      transparent 60%
+    );
+    background-size: 300% 100%;
+    background-position: 150% 0;
+    background-repeat: no-repeat;
+    -webkit-mask: var(--logo-mask) center / contain no-repeat;
+    mask: var(--logo-mask) center / contain no-repeat;
+    mix-blend-mode: soft-light;
+    animation: sweep 8s ease-in-out infinite 2.2s;
+  }
+
+  @keyframes logo-in {
+    from {
+      opacity: 0;
+      transform: scale(0.86);
+      filter: blur(10px) brightness(1.6);
+    }
+    60% {
+      filter: blur(0) brightness(1.25);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+  }
+
+  @keyframes breathe {
+    0%,
+    100% {
+      opacity: 0.7;
+      transform: scale(0.96);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.04);
+    }
+  }
+
+  @keyframes sweep {
+    0% {
+      background-position: 150% 0;
+    }
+    30%,
+    100% {
+      background-position: -50% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shine {
+      display: none;
+    }
+  }
+</style>

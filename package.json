@@ -1,0 +1,19 @@
+{
+  "name": "tailhood-kennel",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tailhood Kennel — Golden Retriever puppies. Coming soon page for tailhoodkennel.com",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "dependencies": {
+    "astro": "^7.4.13"
+  }
+}

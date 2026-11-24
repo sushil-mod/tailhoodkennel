@@ -1,0 +1,16 @@
+---
+/** All decorative background layers in one place. */
+import GoldFrame from './GoldFrame.astro';
+import Particles from './Particles.astro';
+import PawTrail from './PawTrail.astro';
+
+interface Props {
+  paws?: boolean;
+}
+
+const { paws = true } = Astro.props;
+---
+
+<Particles />
+{paws && <PawTrail />}
+<GoldFrame />

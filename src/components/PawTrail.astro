@@ -1,0 +1,114 @@
+---
+/**
+ * A trail of faint gold paw prints "walking" across the lower part of the
+ * screen along a gentle arc, one step at a time, on a loop.
+ */
+import { r } from '../lib/random';
+
+interface Props {
+  steps?: number;
+  /** seconds between two steps */
+  stepGap?: number;
+}
+
+const { steps = 14, stepGap = 0.42 } = Astro.props;
+
+// Arc from bottom-left to the right edge, in viewport percentages.
+const pos = (t: number) => ({ x: 3 + t * 92, y: 90 - Math.sin(t * Math.PI) * 16 });
+
+const prints = Array.from({ length: steps }, (_, i) => {
+  const t = i / (steps - 1);
+  const p = pos(t);
+  const q = pos(Math.min(1, t + 0.01));
+  // Approximate on-screen heading (viewport is wider than tall → scale dx).
+  const angle = (Math.atan2(q.y - p.y, (q.x - p.x) * 1.6) * 180) / Math.PI;
+  // Alternate left / right foot perpendicular to the direction of travel.
+  const side = i % 2 === 0 ? -1 : 1;
+  const rad = ((angle + 90) * Math.PI) / 180;
+  return {
+    x: r(p.x + Math.cos(rad) * 1.1 * side),
+    y: r(p.y + Math.sin(rad) * 1.8 * side),
+    rot: r(angle + 90), // paw glyph points "up" → rotate to heading
+    delay: r(i * stepGap),
+  };
+});
+
+const cycle = r(steps * stepGap + 4); // walk, linger, fade, restart
+---
+
+<div class="paws" aria-hidden="true" style={`--cycle:${cycle}s`}>
+  <svg width="0" height="0" class="defs">
+    <defs>
+      <symbol id="paw" viewBox="0 0 64 64">
+        <ellipse cx="32" cy="42" rx="14" ry="12" />
+        <ellipse cx="14" cy="26" rx="6" ry="8" transform="rotate(-20 14 26)" />
+        <ellipse cx="25" cy="16" rx="6" ry="8.5" transform="rotate(-6 25 16)" />
+        <ellipse cx="39" cy="16" rx="6" ry="8.5" transform="rotate(6 39 16)" />
+        <ellipse cx="50" cy="26" rx="6" ry="8" transform="rotate(20 50 26)" />
+      </symbol>
+    </defs>
+  </svg>
+  {
+    prints.map((p) => (
+      <svg
+        class="print"
+        viewBox="0 0 64 64"
+        style={`left:${p.x}%;top:${p.y}%;--rot:${p.rot}deg;--delay:${p.delay}s`}
+      >
+        <use href="#paw" />
+      </svg>
+    ))
+  }
+</div>
+
+<style>
+  .paws {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  .defs {
+    position: absolute;
+  }
+
+  .print {
+    position: absolute;
+    width: clamp(18px, 2.4vw, 30px);
+    height: auto;
+    fill: var(--gold-400);
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--rot)) scale(0.7);
+    animation: step var(--cycle) ease-out infinite;
+    animation-delay: calc(var(--delay) + 1.8s);
+  }
+
+  @keyframes step {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(var(--rot)) scale(0.7);
+    }
+    4% {
+      opacity: 0.22;
+      transform: translate(-50%, -50%) rotate(var(--rot)) scale(1);
+    }
+    55% {
+      opacity: 0.16;
+    }
+    75%,
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(var(--rot)) scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .print {
+      animation: none;
+      opacity: 0.1;
+      transform: translate(-50%, -50%) rotate(var(--rot));
+    }
+  }
+</style>

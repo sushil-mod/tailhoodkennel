@@ -1,0 +1,91 @@
+---
+import { getImage } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Backdrop from '../components/Backdrop.astro';
+import badge from '../assets/brand/tailhood-badge.png';
+import { site } from '../config/site';
+
+const badgeImg = await getImage({ src: badge, width: 240, format: 'webp' });
+---
+
+<BaseLayout title={`Page not found | ${site.name}`} noindex>
+  <Backdrop />
+
+  <main class="lost">
+    <img
+      class="badge reveal"
+      src={badgeImg.src}
+      width="120"
+      height="120"
+      alt=""
+      style="--d: 0.2s"
+    />
+    <p class="code reveal" style="--d: 0.4s">404</p>
+    <h1 class="reveal" style="--d: 0.55s"><span class="gold-text">This pup wandered off</span></h1>
+    <p class="msg reveal" style="--d: 0.7s">The page you were looking for isn't here, but our home is.</p>
+    <a class="home reveal" style="--d: 0.9s" href="/">Back to Tailhood</a>
+  </main>
+</BaseLayout>
+
+<style>
+  .lost {
+    position: relative;
+    z-index: 2;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 48px var(--gutter);
+    text-align: center;
+  }
+
+  .badge {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 1px rgba(212, 161, 42, 0.6),
+      0 0 50px rgba(212, 161, 42, 0.3);
+  }
+
+  .code {
+    margin: 10px 0 0;
+    color: var(--gold-200);
+    font-weight: 500;
+    letter-spacing: 0.6em;
+    padding-left: 0.6em;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.7rem, 5vw, 2.8rem);
+    line-height: 1.15;
+  }
+
+  .msg {
+    margin: 0;
+    color: var(--cream-dim);
+  }
+
+  .home {
+    margin-top: 14px;
+    padding: 10px 26px;
+    border: 1px solid rgba(212, 161, 42, 0.55);
+    border-radius: 999px;
+    font-size: 0.82rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    transition:
+      background-color 0.25s,
+      color 0.25s;
+  }
+
+  .home:hover {
+    background: var(--gold-400);
+    color: var(--ink-0);
+  }
+</style>

@@ -1,0 +1,67 @@
+---
+/**
+ * Contact / social links. Renders nothing until at least one value is set in
+ * src/config/site.ts → contact.
+ */
+import { site } from '../config/site';
+
+const { whatsapp, phone, email, instagram } = site.contact;
+
+const links = [
+  whatsapp && { label: 'WhatsApp', href: `https://wa.me/${whatsapp.replace(/\D/g, '')}`, external: true },
+  phone && { label: 'Call', href: `tel:${phone.replace(/[^\d+]/g, '')}`, external: false },
+  email && { label: 'Email', href: `mailto:${email}`, external: false },
+  instagram && {
+    label: 'Instagram',
+    href: `https://instagram.com/${instagram.replace(/^@/, '')}`,
+    external: true,
+  },
+].filter((l): l is { label: string; href: string; external: boolean } => Boolean(l));
+---
+
+{
+  links.length > 0 && (
+    <ul class="contact">
+      {links.map((l) => (
+        <li>
+          <a href={l.href} {...(l.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+            {l.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .contact {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 0 14px;
+    padding: 0;
+    list-style: none;
+  }
+
+  a {
+    display: inline-block;
+    padding: 7px 18px;
+    border: 1px solid rgba(212, 161, 42, 0.45);
+    border-radius: 999px;
+    color: var(--gold-200);
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition:
+      background-color 0.25s,
+      color 0.25s,
+      transform 0.25s var(--ease-out);
+  }
+
+  a:hover {
+    background: var(--gold-400);
+    color: var(--ink-0);
+    transform: translateY(-2px);
+  }
+</style>

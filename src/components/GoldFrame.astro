@@ -1,0 +1,95 @@
+---
+/**
+ * Thin gold border with diagonal corner accents (echoing the framed logo).
+ * Lines draw themselves on load.
+ *
+ * SVGs are sized in real pixels (no viewBox stretching), so stroke widths stay
+ * crisp and pathLength-based dash animation works in every browser.
+ */
+---
+
+<div class="frame" aria-hidden="true">
+  <svg class="border">
+    <rect class="line" x="0" y="0" width="100%" height="100%" pathLength="1"></rect>
+  </svg>
+  <svg class="accent tr" viewBox="0 0 100 60" preserveAspectRatio="none">
+    <line class="line" x1="0" y1="0" x2="100" y2="60" pathLength="1"></line>
+  </svg>
+  <svg class="accent bl" viewBox="0 0 100 60" preserveAspectRatio="none">
+    <line class="line" x1="0" y1="0" x2="100" y2="60" pathLength="1"></line>
+  </svg>
+</div>
+
+<style>
+  .frame {
+    position: fixed;
+    inset: clamp(10px, 2.2vw, 26px);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  svg {
+    position: absolute;
+    overflow: visible;
+  }
+
+  .border {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* accents keep a fixed 5:3 box, so the viewBox is never distorted */
+  .accent {
+    width: clamp(110px, 22vw, 320px);
+    aspect-ratio: 5 / 3;
+    height: auto;
+  }
+
+  .tr {
+    top: 0;
+    right: 0;
+  }
+
+  .bl {
+    bottom: 0;
+    left: 0;
+  }
+
+  .line {
+    fill: none;
+    stroke: var(--gold-400);
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw 2.4s var(--ease-out) forwards;
+  }
+
+  .border .line {
+    stroke-width: 1;
+    stroke-opacity: 0.55;
+  }
+
+  .accent .line {
+    stroke-width: 1.2;
+    stroke-opacity: 0.85;
+    animation-duration: 1.4s;
+    animation-delay: 1.2s;
+  }
+
+  .bl .line {
+    animation-delay: 1.5s;
+  }
+
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .line {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

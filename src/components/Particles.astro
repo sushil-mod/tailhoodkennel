@@ -1,0 +1,83 @@
+---
+/** Soft golden bokeh drifting upward. Pure CSS; positions generated at build time. */
+import { seededRandom, r } from '../lib/random';
+
+interface Props {
+  count?: number;
+  seed?: number;
+}
+
+const { count = 18, seed = 7 } = Astro.props;
+const rand = seededRandom(seed);
+
+const dots = Array.from({ length: count }, () => ({
+  x: r(rand() * 100), // vw
+  size: r(3 + rand() * 9), // px
+  dur: r(14 + rand() * 16), // s
+  delay: r(-rand() * 30), // negative → already mid-flight on load
+  drift: r((rand() - 0.5) * 80), // px sideways sway
+  alpha: r(0.25 + rand() * 0.5),
+  blur: r(rand() * 2.5),
+}));
+---
+
+<div class="particles" aria-hidden="true">
+  {
+    dots.map((d) => (
+      <span
+        style={`--x:${d.x}vw;--s:${d.size}px;--dur:${d.dur}s;--delay:${d.delay}s;--drift:${d.drift}px;--a:${d.alpha};--b:${d.blur}px`}
+      />
+    ))
+  }
+</div>
+
+<style>
+  .particles {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  span {
+    position: absolute;
+    left: var(--x);
+    bottom: -20px;
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--gold-100), var(--gold-400) 60%, transparent 72%);
+    box-shadow: 0 0 calc(var(--s) * 1.6) rgba(247, 215, 116, 0.45);
+    filter: blur(var(--b));
+    opacity: 0;
+    animation: rise var(--dur) linear infinite;
+    animation-delay: var(--delay);
+  }
+
+  @keyframes rise {
+    0% {
+      transform: translate3d(0, 0, 0);
+      opacity: 0;
+    }
+    10% {
+      opacity: var(--a);
+    }
+    50% {
+      transform: translate3d(var(--drift), -55svh, 0);
+    }
+    85% {
+      opacity: var(--a);
+    }
+    100% {
+      transform: translate3d(calc(var(--drift) * -0.5), -112svh, 0);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .particles {
+      display: none;
+    }
+  }
+</style>
