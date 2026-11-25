@@ -22,7 +22,21 @@ export const site = {
   contact: {
     whatsapp: '',
     phone: '',
-    email: '',
+    email: 'contact@tailhoodkennel.com',
     instagram: '',
   },
+
+  /**
+   * Cloudflare Turnstile SITE key (public — safe to commit).
+   * Cloudflare dashboard → Turnstile → "Tailhood enquiry" widget → Site Key.
+   * - Production builds use the real key (only works on the widget's hostnames).
+   * - `npm run dev` uses Cloudflare's always-pass TEST key so the form works on localhost.
+   * - Override either with the PUBLIC_TURNSTILE_SITE_KEY env var at build time.
+   */
+  turnstileSiteKey:
+    import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ||
+    (import.meta.env.DEV ? '1x00000000000000000000AA' : '0x4AAAAAAGSOjA1X6Qe16fCG'),
+
+  /** Options for "Interested in" — keep in sync with functions/api/enquiry.ts */
+  enquiryInterests: ['Available puppies', 'Upcoming litter', 'General question'],
 } as const;

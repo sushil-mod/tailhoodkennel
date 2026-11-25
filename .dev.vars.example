@@ -1,0 +1,13 @@
+# Local secrets for testing the enquiry function with:
+#   PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA npm run build && npx wrangler pages dev dist
+# Copy this file to `.dev.vars` (git-ignored) and fill in real values if needed.
+
+# Cloudflare Turnstile always-pass TEST secret (pairs with the test site key 1x00000000000000000000AA)
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+
+# Resend API key (https://resend.com/api-keys)
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxx
+
+# Optional overrides
+# ENQUIRY_TO=contact@tailhoodkennel.com
+# ENQUIRY_FROM=Tailhood Website <website@tailhoodkennel.com>

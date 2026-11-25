@@ -1,16 +1,16 @@
 ---
 /**
- * Contact / social links. Renders nothing until at least one value is set in
- * src/config/site.ts → contact.
+ * Contact / social buttons (WhatsApp, Call, Instagram). Renders nothing until
+ * at least one value is set in src/config/site.ts → contact.
+ * (Email is shown as a text link in the page footer instead.)
  */
 import { site } from '../config/site';
 
-const { whatsapp, phone, email, instagram } = site.contact;
+const { whatsapp, phone, instagram } = site.contact;
 
 const links = [
   whatsapp && { label: 'WhatsApp', href: `https://wa.me/${whatsapp.replace(/\D/g, '')}`, external: true },
   phone && { label: 'Call', href: `tel:${phone.replace(/[^\d+]/g, '')}`, external: false },
-  email && { label: 'Email', href: `mailto:${email}`, external: false },
   instagram && {
     label: 'Instagram',
     href: `https://instagram.com/${instagram.replace(/^@/, '')}`,

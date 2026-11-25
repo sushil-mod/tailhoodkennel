@@ -36,6 +36,19 @@ src/pages/                 index (coming soon) and 404
 docs/PROJECT_PLAN.md       brand notes, decisions and roadmap
 ```
 
+## Enquiry form (`/contact`)
+
+- Page: [`src/pages/contact.astro`](src/pages/contact.astro). Backend: [`functions/api/enquiry.ts`](functions/api/enquiry.ts), a Cloudflare Pages Function.
+- Flow: visitor submits → Turnstile anti-spam check → email sent through **Resend** to `contact@tailhoodkennel.com` → Cloudflare Email Routing forwards it to Gmail. Replying answers the visitor directly.
+- **Turnstile site key** (public): `turnstileSiteKey` in `src/config/site.ts`. Production builds use the real key; `npm run dev` uses Cloudflare's test key automatically.
+- **Secrets** (Cloudflare → Pages project → Settings → Variables and Secrets, type *Secret*):
+  - `RESEND_API_KEY`
+  - `TURNSTILE_SECRET_KEY`
+- **Optional variables:** `ENQUIRY_TO` (default `contact@tailhoodkennel.com`), `ENQUIRY_FROM` (default `Tailhood Website <website@tailhoodkennel.com>`)
+- **Local test:** copy `.dev.vars.example` to `.dev.vars`, then build with the test site key and run the function locally:
+  `PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA npm run build && npx wrangler pages dev dist`
+  (the real key won't load on `localhost`). Rebuild normally before deploying.
+
 ## Deploying to Cloudflare Pages
 
 1. Push this repo to GitHub.
